@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import numpy as np
 from selenium.webdriver.common.action_chains import ActionChains
 import re
-
+import time
 
 df=pd.read_excel("competitor_price.xlsx")
 print(df.head())
@@ -54,8 +54,8 @@ def course_price_safety_limited():
     for i in range(len(df)):
         if pd.notna(df.loc[i,'safety_limited_links']):
             driver.get(df['safety_limited_links'][i])
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[8]/div[2]/div[2]/div[1]/div[2]/span/span")))
-            price=driver.find_element(by=By.XPATH, value="/html/body/div[8]/div[2]/div[2]/div[1]/div[2]/span/span")
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "col")))
+            price=driver.find_element(by=By.XPATH,value="/html/body/div[8]/div[2]/div[2]/div[1]/div[2]/span/span")
             print("These are links",df['safety_limited_links'][i])
             if price.text.lower().__contains__('free'):
                 df.loc[i,'Safety Unlimited, Inc']="0"
@@ -78,7 +78,7 @@ def course_price_compliance_training():
                 df.loc[i,'Compliance Training Online']="0"
                 print(0)
             else:   
-                price=re.search("\$[0-9]*?\.[0-9]*",price.text).group().replace('$','')
+                price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace('$','')
                 df.loc[i,'Compliance Training Online']=price
                 print("price",price)
 
@@ -137,7 +137,7 @@ def course_price_hazmat_student():
                 df.loc[i,'HAZMAT Student']="0"
                 print(0)
             else:   
-                price=re.search("\$[0-9]*?\.[0-9]*",price.text).group().replace("$" , "")
+                price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace("$" , "")
                 df.loc[i,'HAZMAT Student']=price
                 print("price",price)
     driver.close()
@@ -155,7 +155,7 @@ def national_environment_price():
                 df.loc[i,'National Environmental Trainers']="0"
                 print(0)
             else:   
-                price=re.search("\$[0-9]*?\.[0-9]*",price.text).group().replace("$" , "")
+                price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace("$" , "")
                 df.loc[i,'National Environmental Trainers']=price
                 print("price",price)
     driver.close()
@@ -173,7 +173,7 @@ def lion_technology_price():
                 df.loc[i,'Lion Technology']="0"
                 print(0)
             else:   
-                price=re.search("\$[0-9]*?\.[0-9]*",price.text).group().replace("$" , "")
+                price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace("$" , "")
                 df.loc[i,'Lion Technology']=price
                 print("price",price)
     driver.close()
@@ -183,17 +183,19 @@ def online_osha_training_price():
     for i in range(len(df)):
         if pd.notna(df.loc[i,'online_osha_training_links']):
             driver.get(df['online_osha_training_links'][i])
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'price-container')))
-            price_container=driver.find_element(by=By.CLASS_NAME, value='price-container')
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'courseInfoBox')))
+            price_container=driver.find_element(by=By.ID, value='courseInfoBox')
             price=price_container.find_element(by=By.CLASS_NAME,value="price-new")
             print("These are links",df['online_osha_training_links'][i])
             if price.text.lower().__contains__('free'):
                 df.loc[i,'Online OSHA Training']="0"
                 print(0)
             else:   
-                price=re.search("[0-9]*?\.[0-9]*",price.text).group()
+                
+                price=re.search("\$?(\d+)\.?(\d+)",price.text).group()
+                print(price)
                 df.loc[i,'Online OSHA Training']=price
-                print("price",price)
+                print("This is Price",price)
     driver.close()
 
 def semi_course_price():
@@ -209,7 +211,7 @@ def semi_course_price():
                 df.loc[i,'Semi']="0"
                 print(0)
             else:   
-                price=re.search("\$[0-9]*?\.[0-9]*",price.text).group().replace('$','')
+                price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace('$','')
                 df.loc[i,'Semi']=price
                 print("price",price)
     driver.close()
@@ -226,7 +228,7 @@ def osha_training_course_price():
                 df.loc[i,'OSHA Training']="0"
                 print(0)
             else:   
-                price=re.search("\$[0-9]*?\.[0-9]*",price.text).group().replace('$','')  
+                price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace('$','')  
                 df.loc[i,'OSHA Training']=price
                 print("price",price)
 
@@ -245,7 +247,7 @@ def hazwoper_training_course_price():
                 df.loc[i,'HAZWOPER Training']="0"
                 print(0)
             else:   
-                price=re.search("\$[0-9]*?\.[0-9]*",price.text).group().replace("$",'')
+                price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace("$",'')
                 df.loc[i,'HAZWOPER Training']=price
                 print("price",price)
     driver.close()
@@ -263,7 +265,7 @@ def hard_hat_course_price():
                 df.loc[i,'Hard Hat']="0"
                 print(0)
             else:   
-                price=re.search("\$[0-9]*?\.[0-9]*",price.text).group().replace('$','')
+                price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace('$','')
                 df.loc[i,'Hard Hat']=price
                 print("price",price)                
     driver.close()
@@ -281,7 +283,7 @@ def eduwhere_course_price():
                 df.loc[i,'Eduwhere']="0"
                 print(0)
             else:   
-                price=float(re.search("\$[0-9]*?\.[0-9]*",price.text).group().replace('$',''))
+                price=float(re.search("\$?(\d+)\.?(\d+)",price.text).group().replace('$',''))
                 df.loc[i,'Eduwhere']=price
                 print("price",price)                
     driver.close()
@@ -299,28 +301,36 @@ def dci_training_course_price():
                 df.loc[i,'DCI Training Center']="0"
                 print(0)
             else:   
-                price=float(re.search("\$[0-9]*?\.[0-9]*",price.text).group().replace('$',''))
+                price=float(re.search("\$?(\d+)\.?(\d+)",price.text).group().replace('$',''))
                 df.loc[i,'DCI Training Center']=price
                 print("price",price)                
     driver.close()    
 
 
 course_price_hazmat_student()
+time.sleep(3)
+eduwhere_course_price()
+time.sleep(3)
+hard_hat_course_price()
+time.sleep(3)
+hazwoper_training_course_price()
+time.sleep(3)
+online_osha_training_price()
+time.sleep(3)
+lion_technology_price()
+time.sleep(3)
+course_price_click_safety()
+time.sleep(3)
+course_price_safety_limited()
+time.sleep(3)
+course_price_compliance_training()
+time.sleep(3)
+national_environment_price()
+time.sleep(3)
+course_price_360training()
+time.sleep(3)
+price_osha_education_center()
+time.sleep(3)
+semi_course_price()
+df.to_excel("competitor_price.xlsx",index=False)
 
-# course_price_compliance_training()
-#dci_training_course_price()
-# eduwhere_course_price()
-# hard_hat_course_price()
-# hazwoper_training_course_price()
-# osha_training_course_price()
-# semi_course_price()
-# online_osha_training_price()
-# lion_technology_price()
-# course_price_click_safety()
-#course_price_safety_limited()
-#price_compliance_training()
-#course_price_360training()
-#price_osha_education_center()
-
-
-# df.to_excel("competitor_price.xlsx",index=False)
