@@ -32,7 +32,7 @@ print(data)
 
 
 
-'''service = Service()
+service = Service()
 options = webdriver.EdgeOptions()
 options.set_capability("pageLoadStrategy", "normal")
 
@@ -356,4 +356,4 @@ time.sleep(2)
 price_osha_education_center()
 time.sleep(2)
 semi_course_price()
-df.to_excel("competitor_price.xlsx",index=False)'''
+df.to_excel("competitor_price.xlsx",index=False)
