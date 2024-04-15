@@ -167,6 +167,7 @@ def course_price_hazmat_student():
         print("These are links",df['hazmat_student_links'][i])
         if pd.notna(df.loc[i,'hazmat_student_links']):
             driver.get(df['hazmat_student_links'][i])
+            time.sleep(2)
             driver.find_element(by=By.TAG_NAME, value='html').send_keys(Keys.ESCAPE)
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'breadcrumb_banner_price')))
             driver.execute_script("window.stop();")
