@@ -7,37 +7,26 @@ from selenium.webdriver.common.keys import Keys
 import pandas as pd
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import numpy as np
 from selenium.webdriver.common.action_chains import ActionChains
 import re
 import time
-import boto3
 
 
 df=pd.read_excel("competitor_price.xlsx")
-print(df.head())
-s3_client = boto3.client('s3',
-    aws_access_key_id="",
-    aws_secret_access_key="",
-    region_name=""
-    )
-
-bucket_name='qa-media.hazwoper-osha.com'
-object_key='competitor_price/competitor_price.xlsx'
-response = s3_client.get_object(Bucket=bucket_name, Key=object_key)
-data=response['Body'].read()
-print(data)
-
-
-
-
 
 service = Service()
-options = webdriver.EdgeOptions()
+options = webdriver.ChromeOptions()
 options.set_capability("pageLoadStrategy", "normal")
+options.add_argument("start-maximized")
+options.add_argument("--ignore-certificate-errors")
+options.add_argument("--ignore-ssl-errors=yes")
 
 def course_price_360training():
-    driver = webdriver.Edge(options=options, service=service)
+    driver = webdriver.Remote(
+        command_executor='http://localhost:4444/wd/hub',
+        options=options
+    )
+    print("360training")
     for i in range(len(df)):
         if  pd.notna(df.loc[i,'360training_links']):
             
@@ -52,9 +41,15 @@ def course_price_360training():
                 df.loc[i,'360training_price']=price.text.replace('$','')
                 print("price",price.text)
     driver.close()
+    driver.quit()
 
 def price_osha_education_center():
-    driver = webdriver.Edge(service=service, options=options)
+
+    driver = webdriver.Remote(
+        command_executor='http://localhost:4444/wd/hub',
+        options=options
+    )
+    print("OSHA Education Center")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'education_center_links']):
             driver.get(df['education_center_links'][i])
@@ -67,10 +62,15 @@ def price_osha_education_center():
             else:    
                 df.loc[i,'OSHA Education Center']=price.text.replace('$','')
                 print(price.text)
-    driver.close()            
+    driver.close()
+    driver.quit()            
 
 def course_price_safety_limited():
-    driver = webdriver.Edge(service=service, options=options)
+    driver = webdriver.Remote(
+        command_executor='http://localhost:4444/wd/hub',
+        options=options
+    )
+    print("Safety Limited")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'safety_limited_links']):
             driver.get(df['safety_limited_links'][i])
@@ -85,9 +85,14 @@ def course_price_safety_limited():
                 print("price",price.text)
 
     driver.close()
+    driver.quit()
 
 def course_price_compliance_training():
-    driver = webdriver.Edge(service=service, options=options)
+    driver = webdriver.Remote(
+        command_executor='http://localhost:4444/wd/hub',
+        options=options
+    )
+    print("Compliance Training Online")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'compliance_training_links']):
             driver.get(df['compliance_training_links'][i])
@@ -103,11 +108,16 @@ def course_price_compliance_training():
                 print("price",price)
 
     driver.close()
+    driver.quit()
 
 def course_price_click_safety():
 
-    driver = webdriver.Edge(service=service, options=options)
+    driver = webdriver.Remote(
+        command_executor='http://localhost:4444/wd/hub',
+        options=options
+    )
     price=""
+    print("Click Safety")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'click_safety_links']):
             driver.get(df['click_safety_links'][i])
@@ -143,12 +153,15 @@ def course_price_click_safety():
                 df.loc[i,'Click Safety']=price
                 print("price",price)
     driver.close()
+    driver.quit()
 
 def course_price_hazmat_student():
-    options = webdriver.EdgeOptions()
-    options.set_capability("pageLoadStrategy", "eager")
-    driver = webdriver.Edge(service=service, options=options)
+    driver = webdriver.Remote(
+        command_executor='http://localhost:4444/wd/hub',
+        options=options
+    )
     
+    print("Hazmat Student")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'hazmat_student_links']):
             driver.get(df['hazmat_student_links'][i])
@@ -167,9 +180,14 @@ def course_price_hazmat_student():
                 df.loc[i,'HAZMAT Student']=price
                 print("price",price)
     driver.close()
+    driver.quit()
 
 def national_environment_price():
-    driver = webdriver.Edge(service=service, options=options)
+    driver = webdriver.Remote(
+        command_executor='http://localhost:4444/wd/hub',
+        options=options
+    )
+    print("National Environmental Trainers")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'national_environment_links']):
             driver.get(df['national_environment_links'][i])
@@ -185,9 +203,14 @@ def national_environment_price():
                 df.loc[i,'National Environmental Trainers']=price
                 print("price",price)
     driver.close()
+    driver.quit()
 
 def lion_technology_price():
-    driver = webdriver.Edge(service=service, options=options)
+    driver = webdriver.Remote(
+        command_executor='http://localhost:4444/wd/hub',
+        options=options
+    )
+    print("Lion Technology")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'lion_technology_links']):
             driver.get(df['lion_technology_links'][i])
@@ -203,9 +226,14 @@ def lion_technology_price():
                 df.loc[i,'Lion Technology']=price
                 print("price",price)
     driver.close()
+    driver.quit()
 
 def online_osha_training_price():
-    driver = webdriver.Edge(service=service, options=options)
+    driver = webdriver.Remote(
+        command_executor='http://localhost:4444/wd/hub',
+        options=options
+    )
+    print("Online OSHA Training")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'online_osha_training_links']):
             driver.get(df['online_osha_training_links'][i])
@@ -222,9 +250,14 @@ def online_osha_training_price():
                 df.loc[i,'Online OSHA Training']=price
                 print("Price ",price)
     driver.close()
+    driver.quit()
 
 def semi_course_price():
-    driver = webdriver.Edge(service=service, options=options)
+    driver = webdriver.Remote(
+        command_executor='http://localhost:4444/wd/hub',
+        options=options
+    )
+    print("Semi")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'semi_links']):
             driver.get(df['semi_links'][i])
@@ -240,9 +273,14 @@ def semi_course_price():
                 df.loc[i,'Semi']=price
                 print("price",price)
     driver.close()
+    driver.quit()
 
 def osha_training_course_price():
-    driver = webdriver.Edge(service=service, options=options)
+    driver = webdriver.Remote(
+        command_executor='http://localhost:4444/wd/hub',
+        options=options
+    )
+    print("OSHA Training")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'osha_training_links']):
             driver.get(df['osha_training_links'][i])
@@ -258,9 +296,14 @@ def osha_training_course_price():
                 print("price",price)
 
     driver.close()
+    driver.quit()
 
 def hazwoper_training_course_price():
-    driver = webdriver.Edge(service=service, options=options)
+    driver = webdriver.Remote(
+        command_executor='http://localhost:4444/wd/hub',
+        options=options
+    )
+    print("HAZWOPER Training")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'hazwoper_training_links']):
             driver.get(df['hazwoper_training_links'][i])
@@ -276,9 +319,14 @@ def hazwoper_training_course_price():
                 df.loc[i,'HAZWOPER Training']=price
                 print("price",price)
     driver.close()
+    driver.quit()
 
 def hard_hat_course_price():
-    driver = webdriver.Edge(service=service, options=options)
+    driver = webdriver.Remote(
+        command_executor='http://localhost:4444/wd/hub',
+        options=options
+    )
+    print("Hard Hat")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'hard_hat_links']):
             driver.get(df['hard_hat_links'][i])
@@ -294,9 +342,15 @@ def hard_hat_course_price():
                 df.loc[i,'Hard Hat']=price
                 print("price",price)                
     driver.close()
+    driver.quit()
 
 def eduwhere_course_price():
-    driver = webdriver.Edge(service=service, options=options)
+    driver = webdriver.Remote(
+        command_executor='http://localhost:4444/wd/hub',
+        options=options
+    )
+
+    print("Eduwhere")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'eduwhere_links']):
             driver.get(df['eduwhere_links'][i])
@@ -312,10 +366,15 @@ def eduwhere_course_price():
                 df.loc[i,'Eduwhere']=price
                 print("price",price)                
     driver.close()
+    driver.quit()
 
 
 def dci_training_course_price():
-    driver = webdriver.Edge(service=service, options=options)
+    driver = webdriver.Remote(
+        command_executor='http://localhost:4444/wd/hub',
+        options=options
+    )
+    print("DCI Training Center")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'dci_training_links']):
             driver.get(df['dci_training_links'][i])
@@ -329,10 +388,12 @@ def dci_training_course_price():
                 price=float(re.search("\$?(\d+)\.?(\d+)",price.text).group().replace('$',''))
                 df.loc[i,'DCI Training Center']=price
                 print("price",price)                
-    driver.close()    
+    driver.close()
+    driver.quit()  
 
 
 course_price_hazmat_student()
+time.sleep(2)
 eduwhere_course_price()
 time.sleep(2)
 hard_hat_course_price()
