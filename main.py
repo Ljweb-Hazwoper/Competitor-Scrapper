@@ -1,5 +1,6 @@
+import os 
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.edge.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
@@ -10,16 +11,33 @@ import numpy as np
 from selenium.webdriver.common.action_chains import ActionChains
 import re
 import time
+import boto3
+
 
 df=pd.read_excel("competitor_price.xlsx")
 print(df.head())
+s3_client = boto3.client('s3',
+    aws_access_key_id="AKIAXD3K3MC7XGBSXHSV",
+    aws_secret_access_key="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",
+    region_name="us-east-2"
+    )
 
-service = Service()
-options = webdriver.ChromeOptions()
+bucket_name='qa-media.hazwoper-osha.com'
+object_key='competitor_price/competitor_price.xlsx'
+response = s3_client.get_object(Bucket=bucket_name, Key=object_key)
+data=response['Body'].read()
+print(data)
+
+
+
+
+
+'''service = Service()
+options = webdriver.EdgeOptions()
 options.set_capability("pageLoadStrategy", "normal")
 
 def course_price_360training():
-    driver = webdriver.Chrome(options=options, service=service)
+    driver = webdriver.Edge(options=options, service=service)
     for i in range(len(df)):
         if  pd.notna(df.loc[i,'360training_links']):
             
@@ -36,7 +54,7 @@ def course_price_360training():
     driver.close()
 
 def price_osha_education_center():
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Edge(service=service, options=options)
     for i in range(len(df)):
         if pd.notna(df.loc[i,'education_center_links']):
             driver.get(df['education_center_links'][i])
@@ -52,11 +70,11 @@ def price_osha_education_center():
     driver.close()            
 
 def course_price_safety_limited():
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Edge(service=service, options=options)
     for i in range(len(df)):
         if pd.notna(df.loc[i,'safety_limited_links']):
             driver.get(df['safety_limited_links'][i])
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "col")))
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[8]/div[2]/div[2]/div[1]/div[2]")))
             price=driver.find_element(by=By.XPATH,value="/html/body/div[8]/div[2]/div[2]/div[1]/div[2]/span/span")
             
             if price.text.lower().__contains__('free'):
@@ -69,7 +87,7 @@ def course_price_safety_limited():
     driver.close()
 
 def course_price_compliance_training():
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Edge(service=service, options=options)
     for i in range(len(df)):
         if pd.notna(df.loc[i,'compliance_training_links']):
             driver.get(df['compliance_training_links'][i])
@@ -88,7 +106,7 @@ def course_price_compliance_training():
 
 def course_price_click_safety():
 
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Edge(service=service, options=options)
     price=""
     for i in range(len(df)):
         if pd.notna(df.loc[i,'click_safety_links']):
@@ -127,9 +145,9 @@ def course_price_click_safety():
     driver.close()
 
 def course_price_hazmat_student():
-    options = webdriver.ChromeOptions()
+    options = webdriver.EdgeOptions()
     options.set_capability("pageLoadStrategy", "eager")
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Edge(service=service, options=options)
     
     for i in range(len(df)):
         if pd.notna(df.loc[i,'hazmat_student_links']):
@@ -151,7 +169,7 @@ def course_price_hazmat_student():
     driver.close()
 
 def national_environment_price():
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Edge(service=service, options=options)
     for i in range(len(df)):
         if pd.notna(df.loc[i,'national_environment_links']):
             driver.get(df['national_environment_links'][i])
@@ -169,7 +187,7 @@ def national_environment_price():
     driver.close()
 
 def lion_technology_price():
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Edge(service=service, options=options)
     for i in range(len(df)):
         if pd.notna(df.loc[i,'lion_technology_links']):
             driver.get(df['lion_technology_links'][i])
@@ -187,7 +205,7 @@ def lion_technology_price():
     driver.close()
 
 def online_osha_training_price():
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Edge(service=service, options=options)
     for i in range(len(df)):
         if pd.notna(df.loc[i,'online_osha_training_links']):
             driver.get(df['online_osha_training_links'][i])
@@ -206,7 +224,7 @@ def online_osha_training_price():
     driver.close()
 
 def semi_course_price():
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Edge(service=service, options=options)
     for i in range(len(df)):
         if pd.notna(df.loc[i,'semi_links']):
             driver.get(df['semi_links'][i])
@@ -224,7 +242,7 @@ def semi_course_price():
     driver.close()
 
 def osha_training_course_price():
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Edge(service=service, options=options)
     for i in range(len(df)):
         if pd.notna(df.loc[i,'osha_training_links']):
             driver.get(df['osha_training_links'][i])
@@ -242,7 +260,7 @@ def osha_training_course_price():
     driver.close()
 
 def hazwoper_training_course_price():
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Edge(service=service, options=options)
     for i in range(len(df)):
         if pd.notna(df.loc[i,'hazwoper_training_links']):
             driver.get(df['hazwoper_training_links'][i])
@@ -260,7 +278,7 @@ def hazwoper_training_course_price():
     driver.close()
 
 def hard_hat_course_price():
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Edge(service=service, options=options)
     for i in range(len(df)):
         if pd.notna(df.loc[i,'hard_hat_links']):
             driver.get(df['hard_hat_links'][i])
@@ -278,7 +296,7 @@ def hard_hat_course_price():
     driver.close()
 
 def eduwhere_course_price():
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Edge(service=service, options=options)
     for i in range(len(df)):
         if pd.notna(df.loc[i,'eduwhere_links']):
             driver.get(df['eduwhere_links'][i])
@@ -297,7 +315,7 @@ def eduwhere_course_price():
 
 
 def dci_training_course_price():
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Edge(service=service, options=options)
     for i in range(len(df)):
         if pd.notna(df.loc[i,'dci_training_links']):
             driver.get(df['dci_training_links'][i])
@@ -338,4 +356,4 @@ time.sleep(2)
 price_osha_education_center()
 time.sleep(2)
 semi_course_price()
-df.to_excel("competitor_price.xlsx",index=False)
+df.to_excel("competitor_price.xlsx",index=False)'''
