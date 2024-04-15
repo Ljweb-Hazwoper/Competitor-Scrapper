@@ -17,9 +17,9 @@ import boto3
 df=pd.read_excel("competitor_price.xlsx")
 print(df.head())
 s3_client = boto3.client('s3',
-    aws_access_key_id="AKIAXD3K3MC7XGBSXHSV",
-    aws_secret_access_key="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",
-    region_name="us-east-2"
+    aws_access_key_id="",
+    aws_secret_access_key="",
+    region_name=""
     )
 
 bucket_name='qa-media.hazwoper-osha.com'
