@@ -14,7 +14,6 @@ import time
 
 df=pd.read_excel("competitor_price.xlsx")
 
-service = Service()
 options = webdriver.ChromeOptions()
 options.set_capability("pageLoadStrategy", "normal")
 options.add_argument("start-maximized")
@@ -22,13 +21,13 @@ options.add_argument("--ignore-certificate-errors")
 options.add_argument("--ignore-ssl-errors=yes")
 
 def course_price_360training():
-    driver = webdriver.Remote(
-        command_executor='http://localhost:4444/wd/hub',
-        options=options
-    )
     print("360training")
     for i in range(len(df)):
         if  pd.notna(df.loc[i,'360training_links']):
+            driver = webdriver.Remote(
+                command_executor='http://localhost:4444/wd/hub',
+                options=options
+            )
             
             driver.get(df['360training_links'][i])
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "course-box__price")))
@@ -40,18 +39,18 @@ def course_price_360training():
             else:    
                 df.loc[i,'360training_price']=price.text.replace('$','')
                 print("price",price.text)
-    driver.close()
-    driver.quit()
+            driver.close()
+            driver.quit()
 
 def price_osha_education_center():
 
-    driver = webdriver.Remote(
-        command_executor='http://localhost:4444/wd/hub',
-        options=options
-    )
     print("OSHA Education Center")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'education_center_links']):
+            driver = webdriver.Remote(
+                command_executor='http://localhost:4444/wd/hub',
+                options=options
+            )
             driver.get(df['education_center_links'][i])
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "price")))
             price=driver.find_element(by=By.CLASS_NAME, value="price")
@@ -62,17 +61,17 @@ def price_osha_education_center():
             else:    
                 df.loc[i,'OSHA Education Center']=price.text.replace('$','')
                 print(price.text)
-    driver.close()
-    driver.quit()            
+            driver.close()
+            driver.quit()            
 
 def course_price_safety_limited():
-    driver = webdriver.Remote(
-        command_executor='http://localhost:4444/wd/hub',
-        options=options
-    )
     print("Safety Limited")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'safety_limited_links']):
+            driver = webdriver.Remote(
+                command_executor='http://localhost:4444/wd/hub',
+                options=options
+            )
             driver.get(df['safety_limited_links'][i])
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[8]/div[2]/div[2]/div[1]/div[2]")))
             price=driver.find_element(by=By.XPATH,value="/html/body/div[8]/div[2]/div[2]/div[1]/div[2]/span/span")
@@ -84,17 +83,17 @@ def course_price_safety_limited():
                 df.loc[i,'Safety Unlimited, Inc']=price.text.replace('$','')
                 print("price",price.text)
 
-    driver.close()
-    driver.quit()
+            driver.close()
+            driver.quit()
 
 def course_price_compliance_training():
-    driver = webdriver.Remote(
-        command_executor='http://localhost:4444/wd/hub',
-        options=options
-    )
     print("Compliance Training Online")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'compliance_training_links']):
+            driver = webdriver.Remote(
+                command_executor='http://localhost:4444/wd/hub',
+                options=options
+            )
             driver.get(df['compliance_training_links'][i])
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="formAddToCart"]/fieldset/div[1]/div[1]')))
             price=driver.find_element(by=By.XPATH, value='//*[@id="formAddToCart"]/fieldset/div[1]/div[1]')
@@ -107,19 +106,19 @@ def course_price_compliance_training():
                 df.loc[i,'Compliance Training Online']=price
                 print("price",price)
 
-    driver.close()
-    driver.quit()
+            driver.close()
+            driver.quit()
 
 def course_price_click_safety():
 
-    driver = webdriver.Remote(
-        command_executor='http://localhost:4444/wd/hub',
-        options=options
-    )
     price=""
     print("Click Safety")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'click_safety_links']):
+            driver = webdriver.Remote(
+                command_executor='http://localhost:4444/wd/hub',
+                options=options
+            )
             driver.get(df['click_safety_links'][i])
             try:
                 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'product-options-wrapper')))
@@ -152,8 +151,8 @@ def course_price_click_safety():
                 price=price.text.replace('$','')
                 df.loc[i,'Click Safety']=price
                 print("price",price)
-    driver.close()
-    driver.quit()
+            driver.close()
+            driver.quit()
 
 def course_price_hazmat_student():
     print("Hazmat Student")
@@ -165,33 +164,37 @@ def course_price_hazmat_student():
                 command_executor='http://localhost:4444/wd/hub',
                 options=options
             )
-            driver.get(df['hazmat_student_links'][i])
-            time.sleep(2)
-            driver.find_element(by=By.TAG_NAME, value='html').send_keys(Keys.ESCAPE)
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'breadcrumb_banner_price')))
-            driver.execute_script("window.stop();")
-            price_banner=driver.find_element(by=By.CLASS_NAME, value='breadcrumb_banner_price')
-            price=price_banner.find_element(by=By.TAG_NAME, value='a')
-            
-            print("These are links",df['hazmat_student_links'][i])
-            if price.text.lower().__contains__('free'):
-                df.loc[i,'HAZMAT Student']="0"
-                print(0)
-            else:   
-                price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace("$" , "")
-                df.loc[i,'HAZMAT Student']=price
-                print("price",price)
+            try:
+                driver.get(df['hazmat_student_links'][i])
+                time.sleep(2)
+                driver.find_element(by=By.TAG_NAME, value='html').send_keys(Keys.ESCAPE)
+                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'breadcrumb_banner_price')))
+                driver.execute_script("window.stop();")
+                price_banner=driver.find_element(by=By.CLASS_NAME, value='breadcrumb_banner_price')
+                price=price_banner.find_element(by=By.TAG_NAME, value='a')
+                
+                print("These are links",df['hazmat_student_links'][i])
+                if price.text.lower().__contains__('free'):
+                    df.loc[i,'HAZMAT Student']="0"
+                    print(0)
+                else:   
+                    price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace("$" , "")
+                    df.loc[i,'HAZMAT Student']=price
+                    print("price",price)
+            except Exception as e:
+                print("Element not found")
+
             driver.close()
             driver.quit()
 
 def national_environment_price():
-    driver = webdriver.Remote(
-        command_executor='http://localhost:4444/wd/hub',
-        options=options
-    )
     print("National Environmental Trainers")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'national_environment_links']):
+            driver = webdriver.Remote(
+                command_executor='http://localhost:4444/wd/hub',
+                options=options
+            )
             driver.get(df['national_environment_links'][i])
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'course_detail_header')))
             course_header=driver.find_element(by=By.ID, value='course_detail_header')
@@ -204,17 +207,17 @@ def national_environment_price():
                 price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace("$" , "")
                 df.loc[i,'National Environmental Trainers']=price
                 print("price",price)
-    driver.close()
-    driver.quit()
+            driver.close()
+            driver.quit()
 
 def lion_technology_price():
-    driver = webdriver.Remote(
-        command_executor='http://localhost:4444/wd/hub',
-        options=options
-    )
     print("Lion Technology")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'lion_technology_links']):
+            driver = webdriver.Remote(
+                command_executor='http://localhost:4444/wd/hub',
+                options=options
+            )
             driver.get(df['lion_technology_links'][i])
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'detail-top')))
             detail_header=driver.find_element(by=By.CLASS_NAME, value='detail-top')
@@ -227,17 +230,17 @@ def lion_technology_price():
                 price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace("$" , "")
                 df.loc[i,'Lion Technology']=price
                 print("price",price)
-    driver.close()
-    driver.quit()
+            driver.close()
+            driver.quit()
 
 def online_osha_training_price():
-    driver = webdriver.Remote(
-        command_executor='http://localhost:4444/wd/hub',
-        options=options
-    )
     print("Online OSHA Training")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'online_osha_training_links']):
+            driver = webdriver.Remote(
+                command_executor='http://localhost:4444/wd/hub',
+                options=options
+            )
             driver.get(df['online_osha_training_links'][i])
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'courseInfoBox')))
             price_container=driver.find_element(by=By.ID, value='courseInfoBox')
@@ -251,17 +254,17 @@ def online_osha_training_price():
                 price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace("$","")
                 df.loc[i,'Online OSHA Training']=price
                 print("Price ",price)
-    driver.close()
-    driver.quit()
+            driver.close()
+            driver.quit()
 
 def semi_course_price():
-    driver = webdriver.Remote(
-        command_executor='http://localhost:4444/wd/hub',
-        options=options
-    )
     print("Semi")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'semi_links']):
+            driver = webdriver.Remote(
+                command_executor='http://localhost:4444/wd/hub',
+                options=options
+            )
             driver.get(df['semi_links'][i])
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'price_bottom')))
             price_container=driver.find_element(by=By.CLASS_NAME, value='price_bottom')
@@ -274,17 +277,17 @@ def semi_course_price():
                 price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace('$','')
                 df.loc[i,'Semi']=price
                 print("price",price)
-    driver.close()
-    driver.quit()
+            driver.close()
+            driver.quit()
 
 def osha_training_course_price():
-    driver = webdriver.Remote(
-        command_executor='http://localhost:4444/wd/hub',
-        options=options
-    )
     print("OSHA Training")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'osha_training_links']):
+            driver = webdriver.Remote(
+                command_executor='http://localhost:4444/wd/hub',
+                options=options
+            )
             driver.get(df['osha_training_links'][i])
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div/div/main/article/div/div/section[4]/div/div/div/section/div[2]/div/div/div[1]/div/h2')))
             price=driver.find_element(by=By.XPATH,value='/html/body/div[1]/div[2]/div/div/main/article/div/div/section[4]/div/div/div/section/div[2]/div/div/div[1]/div/h2')
@@ -297,17 +300,17 @@ def osha_training_course_price():
                 df.loc[i,'OSHA Training']=price
                 print("price",price)
 
-    driver.close()
-    driver.quit()
+            driver.close()
+            driver.quit()
 
 def hazwoper_training_course_price():
-    driver = webdriver.Remote(
-        command_executor='http://localhost:4444/wd/hub',
-        options=options
-    )
     print("HAZWOPER Training")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'hazwoper_training_links']):
+            driver = webdriver.Remote(
+                command_executor='http://localhost:4444/wd/hub',
+                options=options
+            )
             driver.get(df['hazwoper_training_links'][i])
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'sidebar')))
             price_container=driver.find_element(by=By.ID, value='sidebar')
@@ -320,17 +323,17 @@ def hazwoper_training_course_price():
                 price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace("$",'')
                 df.loc[i,'HAZWOPER Training']=price
                 print("price",price)
-    driver.close()
-    driver.quit()
+            driver.close()
+            driver.quit()
 
 def hard_hat_course_price():
-    driver = webdriver.Remote(
-        command_executor='http://localhost:4444/wd/hub',
-        options=options
-    )
     print("Hard Hat")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'hard_hat_links']):
+            driver = webdriver.Remote(
+                command_executor='http://localhost:4444/wd/hub',
+                options=options
+            )
             driver.get(df['hard_hat_links'][i])
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'summary')))
             price_container=driver.find_element(by=By.CLASS_NAME, value='summary')
@@ -343,18 +346,18 @@ def hard_hat_course_price():
                 price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace('$','')
                 df.loc[i,'Hard Hat']=price
                 print("price",price)                
-    driver.close()
-    driver.quit()
+            driver.close()
+            driver.quit()
 
 def eduwhere_course_price():
-    driver = webdriver.Remote(
-        command_executor='http://localhost:4444/wd/hub',
-        options=options
-    )
 
     print("Eduwhere")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'eduwhere_links']):
+            driver = webdriver.Remote(
+                command_executor='http://localhost:4444/wd/hub',
+                options=options
+            )
             driver.get(df['eduwhere_links'][i])
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'enroll-box')))
             price_container=driver.find_element(by=By.CLASS_NAME, value='enroll-box')
@@ -367,18 +370,18 @@ def eduwhere_course_price():
                 price=float(re.search("\$?(\d+)\.?(\d+)",price.text).group().replace('$',''))
                 df.loc[i,'Eduwhere']=price
                 print("price",price)                
-    driver.close()
-    driver.quit()
+            driver.close()
+            driver.quit()
 
 
 def dci_training_course_price():
-    driver = webdriver.Remote(
-        command_executor='http://localhost:4444/wd/hub',
-        options=options
-    )
     print("DCI Training Center")
     for i in range(len(df)):
         if pd.notna(df.loc[i,'dci_training_links']):
+            driver = webdriver.Remote(
+                command_executor='http://localhost:4444/wd/hub',
+                options=options
+            )
             driver.get(df['dci_training_links'][i])
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'productView-price')))
             price=driver.find_element(by=By.CLASS_NAME, value='productView-price')
@@ -390,8 +393,8 @@ def dci_training_course_price():
                 price=float(re.search("\$?(\d+)\.?(\d+)",price.text).group().replace('$',''))
                 df.loc[i,'DCI Training Center']=price
                 print("price",price)                
-    driver.close()
-    driver.quit()
+            driver.close()
+            driver.quit()
 
 
 course_price_hazmat_student()
