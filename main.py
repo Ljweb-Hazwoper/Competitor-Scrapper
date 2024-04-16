@@ -356,4 +356,47 @@ time.sleep(2)
 price_osha_education_center()
 time.sleep(2)
 semi_course_price()
+<<<<<<< Updated upstream
 df.to_excel("competitor_price.xlsx",index=False)
+=======
+df.to_excel("competitor_price.xlsx",index=False)
+
+
+df=pd.read_excel("competitor_price.xlsx")
+for col in df.columns:
+    if col.__contains__("courses"):
+        print(col)
+        df.drop([col],axis=1,inplace=True)
+
+df['360 Training']=df['360training_links']+'  '+df['360training_duration']+'  '+df['360training_price'].astype('str')
+df['Safety Unlimited']=df['safety_limited_links']+'  '+df['safety_limited_duration']+'  '+df['Safety Unlimited, Inc'].astype('str')
+df['Semi']=df['semi_links']+'  '+df['semi_duration']+'  '+df['Semi '].astype('str')
+df['Online OSHA Training']=df['online_osha_training_links']+'  '+df['online_osha_training_duration']+'  '+df['Online OSHA Training'].astype('str')
+df['OSHA Education Center']=df['education_center_links']+'  '+df['education_center_duration']+'  '+df['OSHA Education Center'].astype('str')
+df['Compliance Training']=df['compliance_training_links']+'  '+df['compliance_training_duration']+'  '+df['Compliance Training Online'].astype('str')
+df['DGI Training']=df['dci_training_links']+'  '+df['dci_training_duration']+'  '+df['DCI Training Center'].astype('str')
+df['Hard Hat']=df['hard_hat_links']+'  '+df['hard_hat_duration']+'  '+df['Hard Hat'].astype('str')
+df['Eduwhere']=df['eduwhere_links']+'  '+df['eduwhere_duration']+'  '+df['Eduwhere'].astype('str')
+df['HAZMAT Student']=df['hazmat_student_links']+'  '+df['hazmat_student_duration']+'  '+df['HAZMAT Student'].astype("str")
+df['Lion Technology']=df['lion_technology_links']+'  '+df['lion_technology_duration']+'  '+df['Lion Technology'].astype("str")
+df['Click Safety']=df['click_safety_links']+'  '+df['click_safety_duration']+'  '+df['Click Safety'].astype("str")
+df['National Environmental Trainer']=df['national_environment_links']+'  '+df['national_environment_duration']+'  '+df['National Environmental Trainers'].astype("str")
+df['Hazwoper Hazmat']=df['hazwoper_training_links']+'  '+df['hazwoper_training_duration']+'  '+df['HAZWOPER Training'].astype('str')
+
+
+for col in df.columns:
+    if col.__contains__("duration") or col.__contains__("price") or col.__contains__("links"):
+        df.drop([col],axis=1,inplace=True)
+
+df.drop(['Safety Unlimited, Inc','Semi ','Hard Hat ','National Environmental Trainers','HAZWOPER Training','Compliance Training Online','Compliance Training Online ','DCI Training Center','Online OSHA Training ','OSHA Training'],axis=1,inplace=True)
+df1=pd.melt(df,id_vars=['Courses','Duration','HAZWOPER OSHA Training'],var_name='Competitor',value_name='data')
+
+df1['competitor_links']=df1['data'].apply(lambda x:str(x).split('  ')[0])
+df1['competitor_duration']=df1['data'].apply(lambda x:str(x).split('  ')[1] if pd.notna(x) else np.nan)
+df1['competitor_price']=df1['data'].apply(lambda x:float(str(x).split('  ')[2]) if pd.notna(x) else np.nan)
+
+df1.to_excel("competitor_price_modified.xlsx")
+
+
+
+>>>>>>> Stashed changes
