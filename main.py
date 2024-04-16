@@ -356,9 +356,7 @@ time.sleep(2)
 price_osha_education_center()
 time.sleep(2)
 semi_course_price()
-<<<<<<< Updated upstream
-df.to_excel("competitor_price.xlsx",index=False)
-=======
+
 df.to_excel("competitor_price.xlsx",index=False)
 
 
@@ -366,7 +364,7 @@ df=pd.read_excel("competitor_price.xlsx")
 for col in df.columns:
     if col.__contains__("courses"):
         print(col)
-        df.drop([col],axis=1,inplace=True)
+        df.drop([col],axis=1, inplace=True)
 
 df['360 Training']=df['360training_links']+'  '+df['360training_duration']+'  '+df['360training_price'].astype('str')
 df['Safety Unlimited']=df['safety_limited_links']+'  '+df['safety_limited_duration']+'  '+df['Safety Unlimited, Inc'].astype('str')
@@ -396,7 +394,3 @@ df1['competitor_duration']=df1['data'].apply(lambda x:str(x).split('  ')[1] if p
 df1['competitor_price']=df1['data'].apply(lambda x:float(str(x).split('  ')[2]) if pd.notna(x) else np.nan)
 
 df1.to_excel("competitor_price_modified.xlsx")
-
-
-
->>>>>>> Stashed changes
