@@ -160,11 +160,11 @@ def course_price_hazmat_student():
         print("Hazmat Student", i)
         print("These are links",df['hazmat_student_links'][i])
         if pd.notna(df.loc[i,'hazmat_student_links']):
-            driver = webdriver.Remote(
-                command_executor='http://localhost:4444/wd/hub',
-                options=options
-            )
             try:
+                driver = webdriver.Remote(
+                    command_executor='http://localhost:4444/wd/hub',
+                    options=options
+                )
                 driver.get(df['hazmat_student_links'][i])
                 time.sleep(2)
                 driver.find_element(by=By.TAG_NAME, value='html').send_keys(Keys.ESCAPE)
@@ -181,11 +181,11 @@ def course_price_hazmat_student():
                     price=re.search("\$?(\d+)\.?(\d+)",price.text).group().replace("$" , "")
                     df.loc[i,'HAZMAT Student']=price
                     print("price",price)
+                driver.close()
+                driver.quit()
             except Exception as e:
                 print("Element not found")
 
-            driver.close()
-            driver.quit()
 
 def national_environment_price():
     print("National Environmental Trainers")
